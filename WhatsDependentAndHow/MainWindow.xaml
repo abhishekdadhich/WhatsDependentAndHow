@@ -1,0 +1,52 @@
+﻿<mm:MetroWindow x:Class="WhatsDependentAndHow.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:WhatsDependentAndHow"
+        xmlns:mm="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        GlowBrush="{DynamicResource AccentColorBrush}"
+        WindowState="Maximized"
+        Title="What's Dependent And How">
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="600"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <TextBox
+                Grid.Row="0" Grid.Column="0" Width="570" Margin="10,10,10,10"
+                Name="txtFilePath" IsReadOnly="True"
+                HorizontalAlignment="Left" VerticalAlignment="Center"
+                mm:TextBoxHelper.Watermark="Select Excel File..."/>
+
+            <Button
+                Grid.Row="0" Grid.Column="1" Margin="10,10,10,10" Content="Select File..."
+                Name="btnFileSelector" HorizontalAlignment="Left" VerticalAlignment="Center"
+                Click="btnFileSelector_Click" mm:ButtonHelper.PreserveTextCase="True"
+                Style="{DynamicResource AccentedSquareButtonStyle}"/>
+
+            <TextBox
+                Grid.Row="1" Grid.Column="0" Width="570" Margin="10,10,10,10"
+                Name="txtOutputPath" IsReadOnly="True"
+                HorizontalAlignment="Left" VerticalAlignment="Center"
+                mm:TextBoxHelper.Watermark="Select Output Path..."/>
+
+            <Button
+                Grid.Row="1" Grid.Column="1" Margin="10,10,10,10" Content="Select Output Path..."
+                Name="btnOutputPath" HorizontalAlignment="Left" VerticalAlignment="Center"
+                Click="btnOutputPath_Click" mm:ButtonHelper.PreserveTextCase="True"
+                Style="{DynamicResource AccentedSquareButtonStyle}"/>
+
+        </Grid>
+    </ScrollViewer>
+    
+</mm:MetroWindow>
