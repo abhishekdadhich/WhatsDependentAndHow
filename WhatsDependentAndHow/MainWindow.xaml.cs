@@ -25,15 +25,5 @@ namespace WhatsDependentAndHow
         {
             InitializeComponent();
         }
-
-        private void btnFileSelector_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void btnOutputPath_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

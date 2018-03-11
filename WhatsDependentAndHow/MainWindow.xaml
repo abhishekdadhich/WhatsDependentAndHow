@@ -3,9 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:WhatsDependentAndHow"
         xmlns:mm="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        GlowBrush="{DynamicResource AccentColorBrush}"
+        xmlns:vm="clr-namespace:WhatsDependentAndHow"
         WindowState="Maximized"
-        Title="What's Dependent And How">
+        Title="What's Dependent And How"
+        DataContext="{DynamicResource MainWindowViewModel}">
+    
+    <mm:MetroWindow.Resources>
+        <vm:MainWindowViewModel x:Key="MainWindowViewModel"/>
+    </mm:MetroWindow.Resources>
+    
     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
         <Grid>
             <Grid.RowDefinitions>
@@ -31,8 +37,9 @@
             <Button
                 Grid.Row="0" Grid.Column="1" Margin="10,10,10,10" Content="Select File..."
                 Name="btnFileSelector" HorizontalAlignment="Left" VerticalAlignment="Center"
-                Click="btnFileSelector_Click" mm:ButtonHelper.PreserveTextCase="True"
-                Style="{DynamicResource AccentedSquareButtonStyle}"/>
+                mm:ButtonHelper.PreserveTextCase="True"
+                Style="{DynamicResource AccentedSquareButtonStyle}" 
+                Command="{Binding ButtonFileSelectorClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"/>
 
             <TextBox
                 Grid.Row="1" Grid.Column="0" Width="570" Margin="10,10,10,10"
@@ -43,8 +50,9 @@
             <Button
                 Grid.Row="1" Grid.Column="1" Margin="10,10,10,10" Content="Select Output Path..."
                 Name="btnOutputPath" HorizontalAlignment="Left" VerticalAlignment="Center"
-                Click="btnOutputPath_Click" mm:ButtonHelper.PreserveTextCase="True"
-                Style="{DynamicResource AccentedSquareButtonStyle}"/>
+                mm:ButtonHelper.PreserveTextCase="True"
+                Style="{DynamicResource AccentedSquareButtonStyle}"
+                Command="{Binding ButtonOutputPathSelectorClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"/>
 
         </Grid>
     </ScrollViewer>
