@@ -26,10 +26,12 @@ namespace WhatsDependentAndHow
 
         public void Execute(object parameter)
         {
+            _mainWindowViewModel.ClearControls();
+
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
             openFileDialog.Filter = "Excel worksheets|*.xls*";
-            openFileDialog.InitialDirectory = @"C:\POC\WhatsDependentAndHow\WhatsDependentAndHow";
+            openFileDialog.InitialDirectory = @"C:\POC";
             openFileDialog.Title = "Select Excel File";
 
             if(openFileDialog.ShowDialog() == true)

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace WhatsDependentAndHow
 {
-    public class MainWindowViewModel : INotifyPropertyChanged, IDisposable
+    public class MainWindowViewModel : INotifyPropertyChanged, IDisposable, IDataErrorInfo
     {
         public bool IsExcelFileInfoLoaded { get; set; }
 
@@ -28,10 +29,11 @@ namespace WhatsDependentAndHow
                 IsExcelFileInfoLoaded = (_excelFileDetails.Length > 0) ? true : false;
 
                 OnPropertyChanged("ExcelFileDetails");
+                OnPropertyChanged("IsExcelFileInfoLoaded");
             }
         }
 
-        public bool IsOutputFilePathAvailable = false;
+        public bool IsOutputFilePathAvailable { get; set; }
         private string _outputFilePath = string.Empty;
         public string OutputFilePath
         {
@@ -47,6 +49,25 @@ namespace WhatsDependentAndHow
                 IsOutputFilePathAvailable = (_outputFilePath.Length > 0) ? true : false;
 
                 OnPropertyChanged("OutputFilePath");
+                OnPropertyChanged("IsOutputFilePathAvailable");
+            }
+        }
+
+        public bool IsCellAddressValid = true;
+        private string _cellAddress = string.Empty;
+        public string CellAddress
+        {
+            get { return _cellAddress; }
+            set
+            {
+                string inputValue = value.Trim().ToUpper();
+
+                if (inputValue == _cellAddress)
+                    return;
+
+                _cellAddress = inputValue;
+
+                OnPropertyChanged("CellAddress");
             }
         }
 
@@ -67,6 +88,49 @@ namespace WhatsDependentAndHow
         public ICommand ButtonOutputPathSelectorClickCommand
         {
             get { return _buttonOutputPathSelector; }
+        }
+
+        public string Error
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                switch(columnName)
+                {
+                    case "CellAddress":
+                        return ValidateCellAddress();
+                }
+
+                return string.Empty;
+            }
+        }
+
+        private string ValidateCellAddress()
+        {
+            if (CellAddress.Length == 0)
+                return string.Empty;
+
+            string regExValidCell = @"^([A-Z]+)(\d+)$";
+
+            Regex regex = new Regex(regExValidCell);
+            if (!regex.IsMatch(CellAddress))
+                return "Invalid Cell Address: " + CellAddress;
+            else
+                return string.Empty;
+        }
+
+        public void ClearControls()
+        {
+            ExcelFileDetails = string.Empty;
+            OutputFilePath = string.Empty;
+            CellAddress = string.Empty;
         }
 
         #region INotifyPropertyChanged Support

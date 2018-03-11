@@ -76,8 +76,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ButtonFileSelector.cs" />
-    <Compile Include="ButtonOutputPathSelectorCommand.cs" />
+    <Compile Include="Commands\ButtonFileSelectorCommand.cs" />
+    <Compile Include="Commands\ButtonGenerateTreeCommand.cs" />
+    <Compile Include="Commands\ButtonOutputPathSelectorCommand.cs" />
     <Compile Include="CellObject.cs" />
     <Compile Include="CellsKeyedCollection.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -86,7 +87,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

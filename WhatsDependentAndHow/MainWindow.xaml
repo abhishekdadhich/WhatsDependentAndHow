@@ -31,6 +31,7 @@
             <TextBox
                 Grid.Row="0" Grid.Column="0" Width="570" Margin="10,10,10,10"
                 Name="txtFilePath" IsReadOnly="True"
+                Text="{Binding ExcelFileDetails}"
                 HorizontalAlignment="Left" VerticalAlignment="Center"
                 mm:TextBoxHelper.Watermark="Select Excel File..."/>
 
@@ -44,15 +45,48 @@
             <TextBox
                 Grid.Row="1" Grid.Column="0" Width="570" Margin="10,10,10,10"
                 Name="txtOutputPath" IsReadOnly="True"
+                Text="{Binding OutputFilePath}"
                 HorizontalAlignment="Left" VerticalAlignment="Center"
-                mm:TextBoxHelper.Watermark="Select Output Path..."/>
+                mm:TextBoxHelper.Watermark="Select Output Path..." 
+                Visibility="{Binding IsExcelFileInfoLoaded, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"/>
 
             <Button
                 Grid.Row="1" Grid.Column="1" Margin="10,10,10,10" Content="Select Output Path..."
                 Name="btnOutputPath" HorizontalAlignment="Left" VerticalAlignment="Center"
                 mm:ButtonHelper.PreserveTextCase="True"
-                Style="{DynamicResource AccentedSquareButtonStyle}"
+                Style="{DynamicResource AccentedSquareButtonStyle}" 
+                Visibility="{Binding IsExcelFileInfoLoaded, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"
                 Command="{Binding ButtonOutputPathSelectorClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"/>
+
+            <StackPanel
+                Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+                <TextBox
+                    Width="250" Margin="10,10,10,10"
+                    Name="txtCellAddress"
+                    Text="{Binding CellAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                    HorizontalAlignment="Left" VerticalAlignment="Center"
+                    mm:TextBoxHelper.Watermark="Enter Cell Address (e.g. C4)" 
+                    Visibility="{Binding IsOutputFilePathAvailable, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}">
+
+                    <Validation.ErrorTemplate>
+                        <ControlTemplate>
+                            <StackPanel>
+                                <AdornedElementPlaceholder Name="textBox"/>
+                                <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red"/>
+                            </StackPanel>
+                        </ControlTemplate>
+                    </Validation.ErrorTemplate>
+                    
+                </TextBox>
+            </StackPanel>
+            
+            <Button
+                Grid.Row="2" Grid.Column="1" Margin="10,10,10,10" Content="Generate Tree"
+                Name="btnGenerateTree" HorizontalAlignment="Left" VerticalAlignment="Center"
+                mm:ButtonHelper.PreserveTextCase="True"
+                Style="{DynamicResource AccentedSquareButtonStyle}" 
+                Visibility="{Binding IsOutputFilePathAvailable, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"
+                Command="{Binding ButtonGenerateTreeCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"/>
 
         </Grid>
     </ScrollViewer>
