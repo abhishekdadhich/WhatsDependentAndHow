@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using WhatsDependentAndHow.Commands;
 
 namespace WhatsDependentAndHow
 {
@@ -71,13 +72,37 @@ namespace WhatsDependentAndHow
             }
         }
 
+        private List<string> _worksheetNames = new List<string>();
+        public List<string> WorkSheetNames
+        {
+            get { return _worksheetNames; }
+            set
+            {
+                _worksheetNames = value;
+                OnPropertyChanged("WorkSheetNames");
+            }
+        }
+
+        private CellsKeyedCollection _workBookCellObjects = new CellsKeyedCollection();
+        public CellsKeyedCollection WorkBookCellObjects
+        {
+            get { return _workBookCellObjects; }
+            set
+            {
+                _workBookCellObjects = value;
+                OnPropertyChanged("WorkBookCellObjects");
+            }
+        }
+
         private ButtonFileSelectorCommand _buttonFileSelector;
         private ButtonOutputPathSelectorCommand _buttonOutputPathSelector;
+        private ButtonGenerateTreeCommand _buttonGenerateTree;
 
         public MainWindowViewModel()
         {
             _buttonFileSelector = new ButtonFileSelectorCommand(this);
             _buttonOutputPathSelector = new ButtonOutputPathSelectorCommand(this);
+            _buttonGenerateTree = new Commands.ButtonGenerateTreeCommand(this);
         }
 
         public ICommand ButtonFileSelectorClickCommand
@@ -88,6 +113,11 @@ namespace WhatsDependentAndHow
         public ICommand ButtonOutputPathSelectorClickCommand
         {
             get { return _buttonOutputPathSelector; }
+        }
+
+        public ICommand ButtonGenerateTreeClickCommand
+        {
+            get { return _buttonGenerateTree; }
         }
 
         public string Error

@@ -86,7 +86,16 @@
                 mm:ButtonHelper.PreserveTextCase="True"
                 Style="{DynamicResource AccentedSquareButtonStyle}" 
                 Visibility="{Binding IsOutputFilePathAvailable, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"
-                Command="{Binding ButtonGenerateTreeCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"/>
+                Command="{Binding ButtonGenerateTreeClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"/>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="2">
+                <TreeView 
+                    Name="treeViewDependents"
+                    />
+                <TreeView 
+                    Name="treeViewPrecedents"
+                    />
+            </StackPanel>
 
         </Grid>
     </ScrollViewer>
