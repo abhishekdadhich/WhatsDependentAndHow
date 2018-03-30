@@ -4,16 +4,17 @@
         xmlns:local="clr-namespace:WhatsDependentAndHow"
         xmlns:mm="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:vm="clr-namespace:WhatsDependentAndHow"
-        WindowState="Maximized"
+        WindowState="Maximized" ShowMaxRestoreButton="False" ShowCloseButton="False"
         Title="What's Dependent And How"
         DataContext="{DynamicResource MainWindowViewModel}">
     
     <mm:MetroWindow.Resources>
         <vm:MainWindowViewModel x:Key="MainWindowViewModel"/>
+        <vm:BusyUserControl x:Key="BusyUserControl"/>
     </mm:MetroWindow.Resources>
     
     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <Grid>
+        <Grid vm:AdornerBehaviour.ShowAdorner="{Binding IsBusy}" vm:AdornerBehaviour.Control="{StaticResource BusyUserControl}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
@@ -29,19 +30,28 @@
             </Grid.ColumnDefinitions>
 
             <TextBox
-                Grid.Row="0" Grid.Column="0" Width="570" Margin="10,10,10,10"
+                Grid.Row="0" Grid.Column="0" MinWidth="600" Margin="10,10,10,10"
                 Name="txtFilePath" IsReadOnly="True"
                 Text="{Binding ExcelFileDetails}"
                 HorizontalAlignment="Left" VerticalAlignment="Center"
                 mm:TextBoxHelper.Watermark="Select Excel File..."/>
 
-            <Button
-                Grid.Row="0" Grid.Column="1" Margin="10,10,10,10" Content="Select File..."
-                Name="btnFileSelector" HorizontalAlignment="Left" VerticalAlignment="Center"
-                mm:ButtonHelper.PreserveTextCase="True"
-                Style="{DynamicResource AccentedSquareButtonStyle}" 
-                Command="{Binding ButtonFileSelectorClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"/>
-
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                <Button
+                    Margin="10,10,10,10" Content="Select File..."
+                    Name="btnFileSelector" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    mm:ButtonHelper.PreserveTextCase="True"
+                    Style="{DynamicResource AccentedSquareButtonStyle}" 
+                    Command="{Binding ButtonFileSelectorClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"/>
+                <Button
+                    Margin="10,10,10,10" Content="Exit Application"
+                    Name="btnClose" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    mm:ButtonHelper.PreserveTextCase="True"
+                    Style="{DynamicResource AccentedSquareButtonStyle}" 
+                    Command="{Binding ButtonCloseApplicationClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"/>
+            </StackPanel>
+            
+<!--
             <TextBox
                 Grid.Row="1" Grid.Column="0" Width="570" Margin="10,10,10,10"
                 Name="txtOutputPath" IsReadOnly="True"
@@ -57,16 +67,24 @@
                 Style="{DynamicResource AccentedSquareButtonStyle}" 
                 Visibility="{Binding IsExcelFileInfoLoaded, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"
                 Command="{Binding ButtonOutputPathSelectorClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"/>
-
+-->
+            
             <StackPanel
-                Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+                Grid.Row="1" Grid.Column="0" Orientation="Horizontal"
+                Visibility="{Binding IsExcelFileInfoLoaded, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}">
+
+                <Label Content="Sheet Name:" Margin="10 10 10 10" />
+
+                <ComboBox
+                    Name="cmbSheets" IsTextSearchEnabled="True" MinWidth="200"
+                    ItemsSource="{Binding WorkSheetNames}" SelectedValue="{Binding SelectedSheetName}" />
+
                 <TextBox
                     Width="250" Margin="10,10,10,10"
                     Name="txtCellAddress"
                     Text="{Binding CellAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                     HorizontalAlignment="Left" VerticalAlignment="Center"
-                    mm:TextBoxHelper.Watermark="Enter Cell Address (e.g. C4)" 
-                    Visibility="{Binding IsOutputFilePathAvailable, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}">
+                    mm:TextBoxHelper.Watermark="Enter Cell Address (e.g. C4)">
 
                     <Validation.ErrorTemplate>
                         <ControlTemplate>
@@ -79,23 +97,66 @@
                     
                 </TextBox>
             </StackPanel>
-            
-            <Button
-                Grid.Row="2" Grid.Column="1" Margin="10,10,10,10" Content="Generate Tree"
-                Name="btnGenerateTree" HorizontalAlignment="Left" VerticalAlignment="Center"
-                mm:ButtonHelper.PreserveTextCase="True"
-                Style="{DynamicResource AccentedSquareButtonStyle}" 
-                Visibility="{Binding IsOutputFilePathAvailable, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"
-                Command="{Binding ButtonGenerateTreeClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"/>
 
-            <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="2">
-                <TreeView 
-                    Name="treeViewDependents"
-                    />
-                <TreeView 
-                    Name="treeViewPrecedents"
-                    />
+            <StackPanel
+                Orientation="Horizontal" Grid.Row="1" Grid.Column="1"
+                Visibility="{Binding IsExcelFileInfoLoaded, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}">
+
+                <Button
+                    Margin="10,10,10,10" Content="Generate Precedent's Tree"
+                    Name="btnGenerateTree" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    mm:ButtonHelper.PreserveTextCase="True"
+                    Style="{DynamicResource AccentedSquareButtonStyle}" 
+                    Command="{Binding ButtonGenerateTreeClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"
+                    CommandParameter="Precedents"/>
+
+                <Button
+                    Margin="10,10,10,10" Content="Generate Dependent's Tree"
+                    Name="btnGenerateDependentsTree" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    mm:ButtonHelper.PreserveTextCase="True"
+                    Style="{DynamicResource AccentedSquareButtonStyle}" 
+                    Command="{Binding ButtonGenerateTreeClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"
+                    CommandParameter="Dependents"/>
+
             </StackPanel>
+
+            <TreeView
+                Grid.Row="2" Grid.ColumnSpan="2" Name="treeView" Width="1000" Height="400" VerticalAlignment="Stretch" Margin="10 10 10 10">
+
+                <TreeViewItem IsExpanded="True" ItemsSource="{Binding WorkBookRootCellObject.Children}">
+
+                    <TreeViewItem.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="IsExpanded" Value="True"/>
+                        </Style>
+                    </TreeViewItem.ItemContainerStyle>
+
+                    <TreeViewItem.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat=" {0} (Value='{1}' Formula'{2}' RowHeading='{3}')">
+                                        <Binding Path="Name"/>
+                                        <Binding Path="Value"/>
+                                        <Binding Path="Formula"/>
+                                        <Binding Path="RowHeading"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </HierarchicalDataTemplate>
+                    </TreeViewItem.ItemTemplate>
+
+                </TreeViewItem>
+                
+            </TreeView>
+
+            <TextBox
+                Grid.ColumnSpan="2" Grid.Row="3" Margin="10 10 10 10" Name="txtStatus"
+                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                VerticalScrollBarVisibility="Visible" MaxLines="10" TextWrapping="Wrap"
+                Background="Black" Foreground="AntiqueWhite" FontFamily="Consolas"
+                Visibility="{Binding IsExcelFileInfoLoaded, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"
+                Text="{Binding StatusMessage, Mode=OneWay}" IsReadOnly="True" />
 
         </Grid>
     </ScrollViewer>
