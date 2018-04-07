@@ -9,12 +9,13 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.Configuration;
 using Microsoft.Practices.EnterpriseLibrary.Logging;
 using System.Diagnostics;
+using WhatsDependentAndHow.ViewModels;
 
 namespace WhatsDependentAndHow.Commands
 {
     public class ButtonGenerateTreeCommand : ICommand
     {
-        private MainWindowViewModel _mainWindowViewModel;
+        private TreeGeneratorViewModel _treeGeneratorViewModel;
         private CellObject _workBookCellObjects = new CellObject() { Name = "ROOT" };
         private Dictionary<string, CellObject> _allWorkBookCellObjects = new Dictionary<string, CellObject>();
         private string _mode = string.Empty;
@@ -26,10 +27,10 @@ namespace WhatsDependentAndHow.Commands
         private int _timeOutInMinutes = int.Parse(ConfigurationManager.AppSettings["TimeoutInMinutes"].ToString());
         private int _maxDepth = int.Parse(ConfigurationManager.AppSettings["MaxDepth"].ToString());
 
-        public ButtonGenerateTreeCommand(MainWindowViewModel mainWindowViewModel)
+        public ButtonGenerateTreeCommand(TreeGeneratorViewModel TreeGeneratorViewModel)
         {
-            _mainWindowViewModel = mainWindowViewModel;
-            Logger.SetLogWriter(new LogWriterFactory().Create());
+            _treeGeneratorViewModel = TreeGeneratorViewModel;
+            try { Logger.SetLogWriter(new LogWriterFactory().Create()); } catch { }
         }
 
         public event EventHandler CanExecuteChanged;
@@ -39,7 +40,7 @@ namespace WhatsDependentAndHow.Commands
             return true;
             //CanExecuteChanged(parameter, new EventArgs());
 
-            //if (_mainWindowViewModel.IsCellAddressValid)
+            //if (_TreeGeneratorViewModel.IsCellAddressValid)
             //    return true;
             //else
             //    return false;
@@ -47,10 +48,10 @@ namespace WhatsDependentAndHow.Commands
 
         public void Execute(object parameter)
         {
-            _mainWindowViewModel.IsBusy = true;
+            _treeGeneratorViewModel.IsBusy = true;
 
             _mode = parameter.ToString();
-            _mainWindowViewModel.StatusMessage = string.Empty;
+            _treeGeneratorViewModel.StatusMessage = string.Empty;
             _workBookCellObjects.Children.Clear();
             _allWorkBookCellObjects.Clear();
             _incompleteProcessing = false;
@@ -63,13 +64,13 @@ namespace WhatsDependentAndHow.Commands
         {
             await Task.Run(() => LoadTree());
 
-            _mainWindowViewModel.IsBusy = false;
+            _treeGeneratorViewModel.IsBusy = false;
         }
 
         private void LoadTree()
         {
-            Excel.Application xlApp = _mainWindowViewModel.XlApp;
-            Excel.Workbook xlWorkbook = _mainWindowViewModel.XlWorkBook;
+            Excel.Application xlApp = _treeGeneratorViewModel.XlApp;
+            Excel.Workbook xlWorkbook = _treeGeneratorViewModel.XlWorkBook;
 
             if(xlApp == null || xlWorkbook == null)
             {
@@ -82,8 +83,8 @@ namespace WhatsDependentAndHow.Commands
 
             try
             {
-                selectedExcelWorkSheet = xlWorkbook.Sheets[_mainWindowViewModel.SelectedSheetName];
-                selectedExcelCell = selectedExcelWorkSheet.Range[_mainWindowViewModel.CellAddress];
+                selectedExcelWorkSheet = xlWorkbook.Sheets[_treeGeneratorViewModel.SelectedSheetName];
+                selectedExcelCell = selectedExcelWorkSheet.Range[_treeGeneratorViewModel.CellAddress];
 
                 if (ValidateInput(selectedExcelWorkSheet, selectedExcelCell) == false)
                     return;
@@ -115,7 +116,7 @@ namespace WhatsDependentAndHow.Commands
 
                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
                 {
-                    _mainWindowViewModel.WorkBookRootCellObject = _workBookCellObjects;
+                    _treeGeneratorViewModel.WorkBookRootCellObject = _workBookCellObjects;
                 });
 
             }
@@ -306,7 +307,7 @@ namespace WhatsDependentAndHow.Commands
 
         private bool ValidateInput(Excel.Worksheet selectedWorkSheet, Excel.Range selectedCell)
         {
-            if(string.IsNullOrEmpty(_mainWindowViewModel.CellAddress) || string.IsNullOrEmpty(_mainWindowViewModel.SelectedSheetName))
+            if(string.IsNullOrEmpty(_treeGeneratorViewModel.CellAddress) || string.IsNullOrEmpty(_treeGeneratorViewModel.SelectedSheetName))
             {
                 UpdateStatus("Please select Sheet Name from Combo and Enter Cell Address in Text Box.");
                 return false;
@@ -338,7 +339,7 @@ namespace WhatsDependentAndHow.Commands
             Logger.Write(message);
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
             {
-                _mainWindowViewModel.StatusMessage += string.Format("[{0} {1}]: {2}\n", DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString(), message);
+                _treeGeneratorViewModel.StatusMessage += string.Format("[{0} {1}]: {2}\n", DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString(), message);
             });
         }
 

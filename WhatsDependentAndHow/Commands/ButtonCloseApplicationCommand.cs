@@ -5,17 +5,18 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using WhatsDependentAndHow.ViewModels;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace WhatsDependentAndHow.Commands
 {
     public class ButtonCloseApplicationCommand : ICommand
     {
-        private MainWindowViewModel _mainWindowViewModel;
+        private TreeGeneratorViewModel _treeGeneratorViewModel;
 
-        public ButtonCloseApplicationCommand(MainWindowViewModel mainWindowViewModel)
+        public ButtonCloseApplicationCommand(TreeGeneratorViewModel treeGeneratorViewModel)
         {
-            _mainWindowViewModel = mainWindowViewModel;
+            _treeGeneratorViewModel = treeGeneratorViewModel;
         }
 
         public event EventHandler CanExecuteChanged;
@@ -27,8 +28,8 @@ namespace WhatsDependentAndHow.Commands
 
         public void Execute(object parameter)
         {
-            Excel.Application xlApp = _mainWindowViewModel.XlApp;
-            Excel.Workbook xlWorkBook = _mainWindowViewModel.XlWorkBook;
+            Excel.Application xlApp = _treeGeneratorViewModel.XlApp;
+            Excel.Workbook xlWorkBook = _treeGeneratorViewModel.XlWorkBook;
 
             if(xlWorkBook != null)
             {

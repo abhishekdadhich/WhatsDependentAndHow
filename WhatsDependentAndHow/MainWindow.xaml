@@ -1,164 +1,140 @@
-﻿<mm:MetroWindow x:Class="WhatsDependentAndHow.MainWindow"
+﻿<controls:MetroWindow x:Class="WhatsDependentAndHow.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:WhatsDependentAndHow"
-        xmlns:mm="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:vm="clr-namespace:WhatsDependentAndHow"
+        xmlns:viewModels="clr-namespace:WhatsDependentAndHow.ViewModels"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         WindowState="Maximized" ShowMaxRestoreButton="False" ShowCloseButton="False"
-        Title="What's Dependent And How"
-        DataContext="{DynamicResource MainWindowViewModel}">
+        Title="What's Dependent And How">
+
+    <Window.DataContext>
+        <viewModels:MainViewModel />
+    </Window.DataContext>
+
+    <Grid>
+
+        <Grid.Resources>
+
+            <local:SelectedItemToContentConverter x:Key="SelectedItemToContentConverter" />
+
+            <!--  this is the template for the items (options too)  -->
+            <DataTemplate x:Key="MenuItemTemplate" DataType="{x:Type controls:HamburgerMenuIconItem}">
+                <Grid x:Name="RootGrid" Height="48" Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="48" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <ContentControl Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding Icon}" Focusable="False" />
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="16" Text="{Binding Label}" />
+                </Grid>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:HamburgerMenu}}, Path=IsPaneOpen}" Value="False">
+                        <Setter TargetName="RootGrid" Property="ToolTip" Value="{Binding ToolTip, Mode=OneWay}" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+
+            <!--  these are the templates for the view models  -->
+            <DataTemplate DataType="{x:Type viewModels:TreeGeneratorViewModel}">
+                <local:TreeGenerator DataContext="{Binding}" />
+            </DataTemplate>
+            <!--<DataTemplate DataType="{x:Type viewModels:TreeGeneratorViewModel}">
+                <local:TreeGenerator DataContext="{Binding}" />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:TreeGeneratorViewModel}">
+                <local:TreeGenerator DataContext="{Binding}" />
+            </DataTemplate>-->
+
+        </Grid.Resources>
+
+        <controls:HamburgerMenu x:Name="HamburgerMenuControl"
+                           DisplayMode="CompactInline"
+                           IsPaneOpen="False"
+                           ItemTemplate="{StaticResource MenuItemTemplate}"
+                           ItemsSource="{Binding MenuItems}"
+                           OptionsItemTemplate="{StaticResource MenuItemTemplate}"
+                           OptionsItemsSource="{Binding MenuOptionItems}"
+                           SelectedIndex="0">
+
+            <!--  select the tag (ViewModel) of the selected item (options item)  -->
+            <controls:HamburgerMenu.Content>
+                <MultiBinding Converter="{StaticResource SelectedItemToContentConverter}">
+                    <Binding FallbackValue="{x:Null}"
+                             Mode="OneWay"
+                             Path="SelectedItem.Tag"
+                             RelativeSource="{RelativeSource Self}" />
+                    <Binding FallbackValue="{x:Null}"
+                             Mode="OneWay"
+                             Path="SelectedOptionsItem.Tag"
+                             RelativeSource="{RelativeSource Self}" />
+                </MultiBinding>
+            </controls:HamburgerMenu.Content>
+
+        </controls:HamburgerMenu>
+
+    </Grid>
+
+    <!--<Grid>
+
+        <Grid.Resources>
+
+            <local:SelectedItemToContentConverter x:Key="SelectedItemToContentConverter" />
+
+            <DataTemplate x:Key="MenuItemTemplate" DataType="{x:Type controls:HamburgerMenuGlyphItem}">
+                <Grid Height="48">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="48" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" Foreground="White" Text="{Binding Glyph}" />
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding Label}" />
+                </Grid>
+            </DataTemplate>
+
+        </Grid.Resources>
+
+        <controls:HamburgerMenu x:Name="HamburgerMenuControl" Foreground="White" PaneBackground="#FF444444" IsPaneOpen="False" DisplayMode="CompactInline"
+                                ItemTemplate="{StaticResource MenuItemTemplate}"
+                                ItemClick="HamburgerMenuControl_OnItemClick"
+                                OptionsItemClick="HamburgerMenuControl_OnItemClick">
+
+
+            --><!--  Items  --><!--
+            <controls:HamburgerMenu.ItemsSource>
+                <controls:HamburgerMenuItemCollection>
+                    <controls:HamburgerMenuGlyphItem Glyph="" Label="Tree Generator">
+                        <controls:HamburgerMenuGlyphItem.Tag>
+                            <local:TreeGenerator />
+                        </controls:HamburgerMenuGlyphItem.Tag>
+                    </controls:HamburgerMenuGlyphItem>
+
+                    <controls:HamburgerMenuGlyphItem Glyph="" Label="Private">
+                        <controls:HamburgerMenuGlyphItem.Tag>
+                            <local:ExcelFilesDiff />
+                        </controls:HamburgerMenuGlyphItem.Tag>
+                    </controls:HamburgerMenuGlyphItem>
+                </controls:HamburgerMenuItemCollection>
+            </controls:HamburgerMenu.ItemsSource>
+
+
+            --><!--  Content  --><!--
+            <controls:HamburgerMenu.ContentTemplate>
+                <DataTemplate DataType="{x:Type controls:HamburgerMenuItem}">
+                    <Grid x:Name="TheContentGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="48" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0" Background="#FF444444">
+                            <TextBlock x:Name="Header" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Foreground="White" Text="{Binding Label}" />
+                        </Border>
+                        <ContentControl x:Name="TheContent" Grid.Row="1" Focusable="False" Foreground="{DynamicResource BlackBrush}" Content="{Binding Tag}" />
+                    </Grid>
+                </DataTemplate>
+            </controls:HamburgerMenu.ContentTemplate>
+
+        </controls:HamburgerMenu>
+
+    </Grid>-->
     
-    <mm:MetroWindow.Resources>
-        <vm:MainWindowViewModel x:Key="MainWindowViewModel"/>
-        <vm:BusyUserControl x:Key="BusyUserControl"/>
-    </mm:MetroWindow.Resources>
-    
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <Grid vm:AdornerBehaviour.ShowAdorner="{Binding IsBusy}" vm:AdornerBehaviour.Control="{StaticResource BusyUserControl}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-            </Grid.RowDefinitions>
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="600"></ColumnDefinition>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-
-            <TextBox
-                Grid.Row="0" Grid.Column="0" MinWidth="600" Margin="10,10,10,10"
-                Name="txtFilePath" IsReadOnly="True"
-                Text="{Binding ExcelFileDetails}"
-                HorizontalAlignment="Left" VerticalAlignment="Center"
-                mm:TextBoxHelper.Watermark="Select Excel File..."/>
-
-            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-                <Button
-                    Margin="10,10,10,10" Content="Select File..."
-                    Name="btnFileSelector" HorizontalAlignment="Left" VerticalAlignment="Center"
-                    mm:ButtonHelper.PreserveTextCase="True"
-                    Style="{DynamicResource AccentedSquareButtonStyle}" 
-                    Command="{Binding ButtonFileSelectorClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"/>
-                <Button
-                    Margin="10,10,10,10" Content="Exit Application"
-                    Name="btnClose" HorizontalAlignment="Left" VerticalAlignment="Center"
-                    mm:ButtonHelper.PreserveTextCase="True"
-                    Style="{DynamicResource AccentedSquareButtonStyle}" 
-                    Command="{Binding ButtonCloseApplicationClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"/>
-            </StackPanel>
-            
-<!--
-            <TextBox
-                Grid.Row="1" Grid.Column="0" Width="570" Margin="10,10,10,10"
-                Name="txtOutputPath" IsReadOnly="True"
-                Text="{Binding OutputFilePath}"
-                HorizontalAlignment="Left" VerticalAlignment="Center"
-                mm:TextBoxHelper.Watermark="Select Output Path..." 
-                Visibility="{Binding IsExcelFileInfoLoaded, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"/>
-
-            <Button
-                Grid.Row="1" Grid.Column="1" Margin="10,10,10,10" Content="Select Output Path..."
-                Name="btnOutputPath" HorizontalAlignment="Left" VerticalAlignment="Center"
-                mm:ButtonHelper.PreserveTextCase="True"
-                Style="{DynamicResource AccentedSquareButtonStyle}" 
-                Visibility="{Binding IsExcelFileInfoLoaded, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"
-                Command="{Binding ButtonOutputPathSelectorClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"/>
--->
-            
-            <StackPanel
-                Grid.Row="1" Grid.Column="0" Orientation="Horizontal"
-                Visibility="{Binding IsExcelFileInfoLoaded, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}">
-
-                <Label Content="Sheet Name:" Margin="10 10 10 10" />
-
-                <ComboBox
-                    Name="cmbSheets" IsTextSearchEnabled="True" MinWidth="200"
-                    ItemsSource="{Binding WorkSheetNames}" SelectedValue="{Binding SelectedSheetName}" />
-
-                <TextBox
-                    Width="250" Margin="10,10,10,10"
-                    Name="txtCellAddress"
-                    Text="{Binding CellAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                    HorizontalAlignment="Left" VerticalAlignment="Center"
-                    mm:TextBoxHelper.Watermark="Enter Cell Address (e.g. C4)">
-
-                    <Validation.ErrorTemplate>
-                        <ControlTemplate>
-                            <StackPanel>
-                                <AdornedElementPlaceholder Name="textBox"/>
-                                <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red"/>
-                            </StackPanel>
-                        </ControlTemplate>
-                    </Validation.ErrorTemplate>
-                    
-                </TextBox>
-            </StackPanel>
-
-            <StackPanel
-                Orientation="Horizontal" Grid.Row="1" Grid.Column="1"
-                Visibility="{Binding IsExcelFileInfoLoaded, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}">
-
-                <Button
-                    Margin="10,10,10,10" Content="Generate Precedent's Tree"
-                    Name="btnGenerateTree" HorizontalAlignment="Left" VerticalAlignment="Center"
-                    mm:ButtonHelper.PreserveTextCase="True"
-                    Style="{DynamicResource AccentedSquareButtonStyle}" 
-                    Command="{Binding ButtonGenerateTreeClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"
-                    CommandParameter="Precedents"/>
-
-                <Button
-                    Margin="10,10,10,10" Content="Generate Dependent's Tree"
-                    Name="btnGenerateDependentsTree" HorizontalAlignment="Left" VerticalAlignment="Center"
-                    mm:ButtonHelper.PreserveTextCase="True"
-                    Style="{DynamicResource AccentedSquareButtonStyle}" 
-                    Command="{Binding ButtonGenerateTreeClickCommand, Mode=OneWay, Source={StaticResource MainWindowViewModel}}"
-                    CommandParameter="Dependents"/>
-
-            </StackPanel>
-
-            <TreeView
-                Grid.Row="2" Grid.ColumnSpan="2" Name="treeView" Width="1000" Height="400" VerticalAlignment="Stretch" Margin="10 10 10 10">
-
-                <TreeViewItem IsExpanded="True" ItemsSource="{Binding WorkBookRootCellObject.Children}">
-
-                    <TreeViewItem.ItemContainerStyle>
-                        <Style TargetType="{x:Type TreeViewItem}">
-                            <Setter Property="IsExpanded" Value="True"/>
-                        </Style>
-                    </TreeViewItem.ItemContainerStyle>
-
-                    <TreeViewItem.ItemTemplate>
-                        <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                            <TextBlock>
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat=" {0} (Value='{1}' Formula'{2}' RowHeading='{3}')">
-                                        <Binding Path="Name"/>
-                                        <Binding Path="Value"/>
-                                        <Binding Path="Formula"/>
-                                        <Binding Path="RowHeading"/>
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </HierarchicalDataTemplate>
-                    </TreeViewItem.ItemTemplate>
-
-                </TreeViewItem>
-                
-            </TreeView>
-
-            <TextBox
-                Grid.ColumnSpan="2" Grid.Row="3" Margin="10 10 10 10" Name="txtStatus"
-                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                VerticalScrollBarVisibility="Visible" MaxLines="10" TextWrapping="Wrap"
-                Background="Black" Foreground="AntiqueWhite" FontFamily="Consolas"
-                Visibility="{Binding IsExcelFileInfoLoaded, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"
-                Text="{Binding StatusMessage, Mode=OneWay}" IsReadOnly="True" />
-
-        </Grid>
-    </ScrollViewer>
-    
-</mm:MetroWindow>
+</controls:MetroWindow>

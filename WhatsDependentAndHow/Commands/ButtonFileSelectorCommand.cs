@@ -9,16 +9,19 @@ using System.Windows.Input;
 using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Diagnostics;
+using WhatsDependentAndHow.ViewModels;
 
 namespace WhatsDependentAndHow
 {
     public class ButtonFileSelectorCommand : ICommand
     {
-        private MainWindowViewModel _mainWindowViewModel;
+        private TreeGeneratorViewModel _treeGeneratorViewModel;
 
-        public ButtonFileSelectorCommand(MainWindowViewModel mainWindowViewModel)
+        public ButtonFileSelectorCommand(TreeGeneratorViewModel treeGeneratorViewModel)
         {
-            _mainWindowViewModel = mainWindowViewModel;
+            _treeGeneratorViewModel = treeGeneratorViewModel;
+
+            try { Logger.SetLogWriter(new LogWriterFactory().Create()); } catch { }
         }
 
         public event EventHandler CanExecuteChanged;
@@ -30,8 +33,8 @@ namespace WhatsDependentAndHow
 
         public void Execute(object parameter)
         {
-            _mainWindowViewModel.ClearControls();
-            _mainWindowViewModel.IsBusy = true;
+            _treeGeneratorViewModel.ClearControls();
+            _treeGeneratorViewModel.IsBusy = true;
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
@@ -39,12 +42,12 @@ namespace WhatsDependentAndHow
             openFileDialog.InitialDirectory = @ConfigurationManager.AppSettings["DefaultDirectory"].ToString();
             openFileDialog.Title = "Select Excel File";
 
-            Excel.Application xlApp = _mainWindowViewModel.XlApp;
-            Excel.Workbook xlWorkBook = _mainWindowViewModel.XlWorkBook;
+            Excel.Application xlApp = _treeGeneratorViewModel.XlApp;
+            Excel.Workbook xlWorkBook = _treeGeneratorViewModel.XlWorkBook;
 
             if(openFileDialog.ShowDialog() == true)
             {
-                _mainWindowViewModel.ExcelFileDetails = openFileDialog.FileName;
+                _treeGeneratorViewModel.ExcelFileDetails = openFileDialog.FileName;
 
                 try
                 {
@@ -56,7 +59,7 @@ namespace WhatsDependentAndHow
 
                     foreach(Excel.Worksheet sheet in xlWorkBook.Worksheets)
                     {
-                        _mainWindowViewModel.WorkSheetNames.Add(sheet.Name);
+                        _treeGeneratorViewModel.WorkSheetNames.Add(sheet.Name);
                     }
                 }
                 catch(Exception e)
@@ -70,7 +73,7 @@ namespace WhatsDependentAndHow
                 }
             }
 
-            _mainWindowViewModel.IsBusy = false;
+            _treeGeneratorViewModel.IsBusy = false;
         }
 
         private void OpenExcelFile(out Excel.Application xlApp, out Excel.Workbook xlWorkBook)
@@ -80,10 +83,10 @@ namespace WhatsDependentAndHow
                 xlApp = new Excel.Application();
                 xlApp.DisplayAlerts = false;
                 xlApp.AskToUpdateLinks = false;
-                xlWorkBook = xlApp.Workbooks.Open(_mainWindowViewModel.ExcelFileDetails, UpdateLinks: false, ReadOnly: true);
+                xlWorkBook = xlApp.Workbooks.Open(_treeGeneratorViewModel.ExcelFileDetails, UpdateLinks: false, ReadOnly: true);
 
-                _mainWindowViewModel.XlApp = xlApp;
-                _mainWindowViewModel.XlWorkBook = xlWorkBook;
+                _treeGeneratorViewModel.XlApp = xlApp;
+                _treeGeneratorViewModel.XlWorkBook = xlWorkBook;
             }
             catch (Exception e)
             {
@@ -98,7 +101,7 @@ namespace WhatsDependentAndHow
             Logger.Write(message);
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
             {
-                _mainWindowViewModel.StatusMessage += string.Format("[{0} {1}]: {2}\n", DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString(), message);
+                _treeGeneratorViewModel.StatusMessage += string.Format("[{0} {1}]: {2}\n", DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString(), message);
             });
         }
     }
