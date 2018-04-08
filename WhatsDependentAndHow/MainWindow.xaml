@@ -17,7 +17,7 @@
 
             <local:SelectedItemToContentConverter x:Key="SelectedItemToContentConverter" />
 
-            <!--  this is the template for the items (options too)  -->
+            <!--  this is the template for all the items including options  -->
             <DataTemplate x:Key="MenuItemTemplate" DataType="{x:Type controls:HamburgerMenuIconItem}">
                 <Grid x:Name="RootGrid" Height="48" Background="Transparent">
                     <Grid.ColumnDefinitions>
@@ -38,103 +38,29 @@
             <DataTemplate DataType="{x:Type viewModels:TreeGeneratorViewModel}">
                 <local:TreeGenerator DataContext="{Binding}" />
             </DataTemplate>
-            <!--<DataTemplate DataType="{x:Type viewModels:TreeGeneratorViewModel}">
-                <local:TreeGenerator DataContext="{Binding}" />
+            <DataTemplate DataType="{x:Type viewModels:ExcelDiffViewModel}">
+                <local:ExcelDiff DataContext="{Binding}" />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModels:TreeGeneratorViewModel}">
-                <local:TreeGenerator DataContext="{Binding}" />
-            </DataTemplate>-->
+            <DataTemplate DataType="{x:Type viewModels:ExitApplicationViewModel}">
+                <local:ExitApplication DataContext="{Binding}" />
+            </DataTemplate>
 
         </Grid.Resources>
 
-        <controls:HamburgerMenu x:Name="HamburgerMenuControl"
-                           DisplayMode="CompactInline"
-                           IsPaneOpen="False"
-                           ItemTemplate="{StaticResource MenuItemTemplate}"
-                           ItemsSource="{Binding MenuItems}"
-                           OptionsItemTemplate="{StaticResource MenuItemTemplate}"
-                           OptionsItemsSource="{Binding MenuOptionItems}"
-                           SelectedIndex="0">
+        <controls:HamburgerMenu x:Name="HamburgerMenuControl" DisplayMode="CompactInline" IsPaneOpen="True"
+                           ItemTemplate="{StaticResource MenuItemTemplate}" ItemsSource="{Binding MenuItems}"
+                           OptionsItemTemplate="{StaticResource MenuItemTemplate}" OptionsItemsSource="{Binding MenuOptionItems}" SelectedIndex="0">
 
             <!--  select the tag (ViewModel) of the selected item (options item)  -->
             <controls:HamburgerMenu.Content>
                 <MultiBinding Converter="{StaticResource SelectedItemToContentConverter}">
-                    <Binding FallbackValue="{x:Null}"
-                             Mode="OneWay"
-                             Path="SelectedItem.Tag"
-                             RelativeSource="{RelativeSource Self}" />
-                    <Binding FallbackValue="{x:Null}"
-                             Mode="OneWay"
-                             Path="SelectedOptionsItem.Tag"
-                             RelativeSource="{RelativeSource Self}" />
+                    <Binding FallbackValue="{x:Null}" Mode="OneWay" Path="SelectedItem.Tag" RelativeSource="{RelativeSource Self}" />
+                    <Binding FallbackValue="{x:Null}" Mode="OneWay" Path="SelectedOptionsItem.Tag" RelativeSource="{RelativeSource Self}" />
                 </MultiBinding>
             </controls:HamburgerMenu.Content>
 
         </controls:HamburgerMenu>
 
     </Grid>
-
-    <!--<Grid>
-
-        <Grid.Resources>
-
-            <local:SelectedItemToContentConverter x:Key="SelectedItemToContentConverter" />
-
-            <DataTemplate x:Key="MenuItemTemplate" DataType="{x:Type controls:HamburgerMenuGlyphItem}">
-                <Grid Height="48">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="48" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" Foreground="White" Text="{Binding Glyph}" />
-                    <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding Label}" />
-                </Grid>
-            </DataTemplate>
-
-        </Grid.Resources>
-
-        <controls:HamburgerMenu x:Name="HamburgerMenuControl" Foreground="White" PaneBackground="#FF444444" IsPaneOpen="False" DisplayMode="CompactInline"
-                                ItemTemplate="{StaticResource MenuItemTemplate}"
-                                ItemClick="HamburgerMenuControl_OnItemClick"
-                                OptionsItemClick="HamburgerMenuControl_OnItemClick">
-
-
-            --><!--  Items  --><!--
-            <controls:HamburgerMenu.ItemsSource>
-                <controls:HamburgerMenuItemCollection>
-                    <controls:HamburgerMenuGlyphItem Glyph="" Label="Tree Generator">
-                        <controls:HamburgerMenuGlyphItem.Tag>
-                            <local:TreeGenerator />
-                        </controls:HamburgerMenuGlyphItem.Tag>
-                    </controls:HamburgerMenuGlyphItem>
-
-                    <controls:HamburgerMenuGlyphItem Glyph="" Label="Private">
-                        <controls:HamburgerMenuGlyphItem.Tag>
-                            <local:ExcelFilesDiff />
-                        </controls:HamburgerMenuGlyphItem.Tag>
-                    </controls:HamburgerMenuGlyphItem>
-                </controls:HamburgerMenuItemCollection>
-            </controls:HamburgerMenu.ItemsSource>
-
-
-            --><!--  Content  --><!--
-            <controls:HamburgerMenu.ContentTemplate>
-                <DataTemplate DataType="{x:Type controls:HamburgerMenuItem}">
-                    <Grid x:Name="TheContentGrid">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="48" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Border Grid.Row="0" Background="#FF444444">
-                            <TextBlock x:Name="Header" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Foreground="White" Text="{Binding Label}" />
-                        </Border>
-                        <ContentControl x:Name="TheContent" Grid.Row="1" Focusable="False" Foreground="{DynamicResource BlackBrush}" Content="{Binding Tag}" />
-                    </Grid>
-                </DataTemplate>
-            </controls:HamburgerMenu.ContentTemplate>
-
-        </controls:HamburgerMenu>
-
-    </Grid>-->
     
 </controls:MetroWindow>

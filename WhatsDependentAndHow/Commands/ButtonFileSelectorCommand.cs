@@ -20,8 +20,6 @@ namespace WhatsDependentAndHow
         public ButtonFileSelectorCommand(TreeGeneratorViewModel treeGeneratorViewModel)
         {
             _treeGeneratorViewModel = treeGeneratorViewModel;
-
-            try { Logger.SetLogWriter(new LogWriterFactory().Create()); } catch { }
         }
 
         public event EventHandler CanExecuteChanged;
@@ -36,14 +34,10 @@ namespace WhatsDependentAndHow
             _treeGeneratorViewModel.ClearControls();
             _treeGeneratorViewModel.IsBusy = true;
 
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            openFileDialog.Filter = ConfigurationManager.AppSettings["OpenDialogFilter"].ToString();
-            openFileDialog.InitialDirectory = @ConfigurationManager.AppSettings["DefaultDirectory"].ToString();
-            openFileDialog.Title = "Select Excel File";
-
             Excel.Application xlApp = _treeGeneratorViewModel.XlApp;
             Excel.Workbook xlWorkBook = _treeGeneratorViewModel.XlWorkBook;
+
+            OpenFileDialog openFileDialog = Helpers.Helpers.GetExcelOpenFileDialog("Select Excel File");
 
             if(openFileDialog.ShowDialog() == true)
             {
@@ -53,9 +47,11 @@ namespace WhatsDependentAndHow
                 {
                     var swFileOpen = Stopwatch.StartNew();
 
-                    OpenExcelFile(out xlApp, out xlWorkBook);
+                    Helpers.Helpers.OpenExcelFile(out xlApp, out xlWorkBook, openFileDialog.FileName);
+                    _treeGeneratorViewModel.XlApp = xlApp;
+                    _treeGeneratorViewModel.XlWorkBook = xlWorkBook;
 
-                    UpdateStatus(string.Format("File opened successfully in {0}. Total worksheets in file: {1}", swFileOpen.Elapsed, xlWorkBook.Worksheets.Count));
+                    _treeGeneratorViewModel.UpdateStatus(string.Format("File opened successfully in {0}. Total worksheets in file: {1}", swFileOpen.Elapsed, xlWorkBook.Worksheets.Count));
 
                     foreach(Excel.Worksheet sheet in xlWorkBook.Worksheets)
                     {
@@ -69,40 +65,11 @@ namespace WhatsDependentAndHow
                     if (e.InnerException != null)
                         message = e.InnerException.Message;
 
-                    UpdateStatus(string.Format("Error: {0}.\n Stack Trace: {2}", message, e.Message, e.StackTrace));
+                    _treeGeneratorViewModel.UpdateStatus(string.Format("Error: {0}.\n Stack Trace: {2}", message, e.Message, e.StackTrace));
                 }
             }
 
             _treeGeneratorViewModel.IsBusy = false;
-        }
-
-        private void OpenExcelFile(out Excel.Application xlApp, out Excel.Workbook xlWorkBook)
-        {
-            try
-            {
-                xlApp = new Excel.Application();
-                xlApp.DisplayAlerts = false;
-                xlApp.AskToUpdateLinks = false;
-                xlWorkBook = xlApp.Workbooks.Open(_treeGeneratorViewModel.ExcelFileDetails, UpdateLinks: false, ReadOnly: true);
-
-                _treeGeneratorViewModel.XlApp = xlApp;
-                _treeGeneratorViewModel.XlWorkBook = xlWorkBook;
-            }
-            catch (Exception e)
-            {
-                xlApp = null;
-                xlWorkBook = null;
-                UpdateStatus(string.Format("Error: {0}.\n Stack Trace: {1}", e.Message, e.StackTrace));
-            }
-        }
-
-        private void UpdateStatus(string message)
-        {
-            Logger.Write(message);
-            System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            {
-                _treeGeneratorViewModel.StatusMessage += string.Format("[{0} {1}]: {2}\n", DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString(), message);
-            });
         }
     }
 }

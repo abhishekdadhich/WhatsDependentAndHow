@@ -8,12 +8,7 @@
         xmlns:vm="clr-namespace:WhatsDependentAndHow.ViewModels"
         mc:Ignorable="d">
 
-    <UserControl.DataContext>
-        <vm:TreeGeneratorViewModel/>
-    </UserControl.DataContext>
-    
     <UserControl.Resources>
-        <!--<vm:TreeGeneratorViewModel x:Key="TreeGeneratorViewModel"/>-->
         <local:BusyUserControl x:Key="BusyUserControl"/>
     </UserControl.Resources>
 
@@ -40,21 +35,13 @@
                 HorizontalAlignment="Left" VerticalAlignment="Center"
                 controls:TextBoxHelper.Watermark="Select Excel File..."/>
 
-            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-                <Button
-                    Margin="10,10,10,10" Content="Select File..."
-                    Name="btnFileSelector" HorizontalAlignment="Left" VerticalAlignment="Center"
-                    controls:ButtonHelper.PreserveTextCase="True"
-                    Style="{DynamicResource AccentedSquareButtonStyle}" 
-                    Command="{Binding ButtonFileSelectorClickCommand, Mode=OneWay}"/>
-                <Button
-                    Margin="10,10,10,10" Content="Exit Application"
-                    Name="btnClose" HorizontalAlignment="Left" VerticalAlignment="Center"
-                    controls:ButtonHelper.PreserveTextCase="True"
-                    Style="{DynamicResource AccentedSquareButtonStyle}" 
-                    Command="{Binding ButtonCloseApplicationClickCommand, Mode=OneWay}"/>
-            </StackPanel>
-
+            <Button Grid.Row="0" Grid.Column="1"
+                Margin="10,10,10,10" Content="Select File..."
+                Name="btnFileSelector" HorizontalAlignment="Left" VerticalAlignment="Center"
+                controls:ButtonHelper.PreserveTextCase="True"
+                Style="{DynamicResource AccentedSquareButtonStyle}" 
+                Command="{Binding ButtonFileSelectorClickCommand, Mode=OneWay}"/>
+                
             <!--
             <TextBox
                 Grid.Row="1" Grid.Column="0" Width="570" Margin="10,10,10,10"

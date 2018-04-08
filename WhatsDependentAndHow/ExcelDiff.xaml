@@ -1,0 +1,88 @@
+﻿<UserControl x:Class="WhatsDependentAndHow.ExcelDiff"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WhatsDependentAndHow"
+             xmlns:vm="clr-namespace:WhatsDependentAndHow.ViewModels"
+             xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             mc:Ignorable="d">
+
+    
+    <UserControl.Resources>
+        <local:BusyUserControl x:Key="BusyUserControl"/>
+    </UserControl.Resources>
+
+    <Grid local:AdornerBehaviour.ShowAdorner="{Binding IsBusy}" local:AdornerBehaviour.Control="{StaticResource BusyUserControl}">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="600"></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <TextBox
+            Grid.Row="0" Grid.Column="0" MinWidth="500" Margin="10,10,10,10"
+            Name="txtLeftFilePath" IsReadOnly="True"
+            Text="{Binding LeftFilePath}"
+            HorizontalAlignment="Left" VerticalAlignment="Center"
+            controls:TextBoxHelper.Watermark="Select Left Excel File for Comparison..."/>
+        
+        <Button
+            Grid.Row="0" Grid.Column="1"
+            Margin="10,10,10,10" Content="Select Left File..."
+            Name="btnLeftFileSelector" HorizontalAlignment="Left" VerticalAlignment="Center"
+            controls:ButtonHelper.PreserveTextCase="True"
+            Style="{DynamicResource AccentedSquareButtonStyle}" 
+            Command="{Binding ButtonFileSelectorForComparisonClickCommand, Mode=OneWay}"
+            CommandParameter="Left"/>
+
+        <TextBox
+            Grid.Row="1" Grid.Column="0" MinWidth="500" Margin="10,10,10,10"
+            Name="txtRightFilePath" IsReadOnly="True"
+            Text="{Binding RightFilePath}"
+            HorizontalAlignment="Left" VerticalAlignment="Center"
+            controls:TextBoxHelper.Watermark="Select Right Excel File for Comparison..."/>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="10,10,10,10">
+
+            <Button
+                Content="Select Right File..."
+                Name="btnRightFileSelector" HorizontalAlignment="Left" VerticalAlignment="Center"
+                controls:ButtonHelper.PreserveTextCase="True"
+                Style="{DynamicResource AccentedSquareButtonStyle}" 
+                Command="{Binding ButtonFileSelectorForComparisonClickCommand, Mode=OneWay}"
+                CommandParameter="Right"/>
+
+            <Button
+                Margin="10,10,10,10" Content="Find Differences"
+                Name="btnFindDiff" HorizontalAlignment="Left" VerticalAlignment="Center"
+                controls:ButtonHelper.PreserveTextCase="True"
+                Style="{DynamicResource AccentedSquareButtonStyle}" 
+                Command="{Binding ButtonFindDifferencesClickCommand, Mode=OneWay}"
+                CommandParameter="Right"/>
+
+        </StackPanel>
+
+        <GroupBox Header="Difference Summary" Grid.ColumnSpan="2" Grid.Row="2" Margin="10 10 10 10" 
+                  Visibility="{Binding IsExcelFileInfoLoaded, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}">
+            <TextBlock Name="txtSummary" TextWrapping="Wrap" Text="{Binding DiffSummary}" />
+        </GroupBox>
+
+        <TextBox
+            Grid.ColumnSpan="2" Grid.Row="3" Margin="10 10 10 10" Name="txtStatus"
+            VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+            VerticalScrollBarVisibility="Visible" MaxLines="10" TextWrapping="Wrap"
+            Background="Black" Foreground="AntiqueWhite" FontFamily="Consolas"
+            Visibility="{Binding IsExcelFileInfoLoaded, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"
+            Text="{Binding StatusMessage, Mode=OneWay}" IsReadOnly="True" />
+    </Grid>
+</UserControl>

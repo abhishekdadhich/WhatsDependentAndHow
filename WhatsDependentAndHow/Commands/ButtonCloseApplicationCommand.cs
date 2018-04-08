@@ -12,11 +12,11 @@ namespace WhatsDependentAndHow.Commands
 {
     public class ButtonCloseApplicationCommand : ICommand
     {
-        private TreeGeneratorViewModel _treeGeneratorViewModel;
+        private ExitApplicationViewModel _viewModel;
 
-        public ButtonCloseApplicationCommand(TreeGeneratorViewModel treeGeneratorViewModel)
+        public ButtonCloseApplicationCommand(ExitApplicationViewModel viewModel)
         {
-            _treeGeneratorViewModel = treeGeneratorViewModel;
+            _viewModel = viewModel;
         }
 
         public event EventHandler CanExecuteChanged;
@@ -28,16 +28,30 @@ namespace WhatsDependentAndHow.Commands
 
         public void Execute(object parameter)
         {
-            Excel.Application xlApp = _treeGeneratorViewModel.XlApp;
-            Excel.Workbook xlWorkBook = _treeGeneratorViewModel.XlWorkBook;
+            Excel.Application xlApp = _viewModel.ViewModelMainWindow.XlApp;
+            Excel.Workbook xlWorkBookTreeGenerator = _viewModel.ViewModelMainWindow.XlWorkBookForTreeGeneration;
+            Excel.Workbook xlLeftWorkBook = _viewModel.ViewModelMainWindow.XlLeftWorkBook;
+            Excel.Workbook xlRightWorkBook = _viewModel.ViewModelMainWindow.XlRightWorkBook;
 
-            if(xlWorkBook != null)
+            if (xlWorkBookTreeGenerator != null)
             {
-                xlWorkBook.Close();
-                Marshal.ReleaseComObject(xlWorkBook);
+                xlWorkBookTreeGenerator.Close();
+                Marshal.ReleaseComObject(xlWorkBookTreeGenerator);
             }
 
-            if(xlApp != null)
+            if (xlLeftWorkBook != null)
+            {
+                xlLeftWorkBook.Close();
+                Marshal.ReleaseComObject(xlLeftWorkBook);
+            }
+
+            if (xlRightWorkBook != null)
+            {
+                xlRightWorkBook.Close();
+                Marshal.ReleaseComObject(xlRightWorkBook);
+            }
+
+            if (xlApp != null)
             {
                 xlApp.Quit();
                 Marshal.ReleaseComObject(xlApp);

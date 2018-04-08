@@ -13,7 +13,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace WhatsDependentAndHow.ViewModels
 {
-    public class TreeGeneratorViewModel : INotifyPropertyChanged, IDisposable, IDataErrorInfo
+    public class TreeGeneratorViewModel : PropertyChangedViewModel, IDisposable, IDataErrorInfo
     {
         public bool IsExcelFileInfoLoaded { get; set; }
 
@@ -118,24 +118,22 @@ namespace WhatsDependentAndHow.ViewModels
             }
         }
 
-        private Excel.Application _xlApp = null;
         public Excel.Application XlApp
         {
-            get { return _xlApp; }
+            get { return _mainViewModel.XlApp; }
             set
             {
-                _xlApp = value;
+                _mainViewModel.XlApp = value;
                 OnPropertyChanged("XlApp");
             }
         }
 
-        private Excel.Workbook _xlWorkBook = null;
         public Excel.Workbook XlWorkBook
         {
-            get { return _xlWorkBook; }
+            get { return _mainViewModel.XlWorkBookForTreeGeneration; }
             set
             {
-                _xlWorkBook = value;
+                _mainViewModel.XlWorkBookForTreeGeneration = value;
                 OnPropertyChanged("XlWorkBook");
             }
         }
@@ -151,30 +149,17 @@ namespace WhatsDependentAndHow.ViewModels
             }
         }
 
-        private string _statusMessage = "Awaiting User Input...";
-        public string StatusMessage
-        {
-            get { return _statusMessage; }
-            set
-            {
-                _statusMessage = value;
-                OnPropertyChanged("StatusMessage");
-            }
-        }
-
         private ButtonFileSelectorCommand _buttonFileSelector;
         private ButtonOutputPathSelectorCommand _buttonOutputPathSelector;
         private ButtonGenerateTreeCommand _buttonGenerateTree;
-        private ButtonCloseApplicationCommand _buttonCloseApplicationCommand;
-        private readonly PropertyChangedViewModel _mainViewModel;
+        private readonly MainViewModel _mainViewModel;
 
-        public TreeGeneratorViewModel(PropertyChangedViewModel mainViewModel)
+        public TreeGeneratorViewModel(MainViewModel mainViewModel)
         {
             _mainViewModel = mainViewModel;
             _buttonFileSelector = new ButtonFileSelectorCommand(this);
             _buttonOutputPathSelector = new ButtonOutputPathSelectorCommand(this);
             _buttonGenerateTree = new ButtonGenerateTreeCommand(this);
-            _buttonCloseApplicationCommand = new ButtonCloseApplicationCommand(this);
         }
 
         public TreeGeneratorViewModel()
@@ -182,7 +167,6 @@ namespace WhatsDependentAndHow.ViewModels
             _buttonFileSelector = new ButtonFileSelectorCommand(this);
             _buttonOutputPathSelector = new ButtonOutputPathSelectorCommand(this);
             _buttonGenerateTree = new ButtonGenerateTreeCommand(this);
-            _buttonCloseApplicationCommand = new ButtonCloseApplicationCommand(this);
         }
 
         public ICommand ButtonFileSelectorClickCommand
@@ -198,11 +182,6 @@ namespace WhatsDependentAndHow.ViewModels
         public ICommand ButtonGenerateTreeClickCommand
         {
             get { return _buttonGenerateTree; }
-        }
-
-        public ICommand ButtonCloseApplicationClickCommand
-        {
-            get { return _buttonCloseApplicationCommand; }
         }
 
         public string Error
@@ -252,23 +231,9 @@ namespace WhatsDependentAndHow.ViewModels
             ExcelFileDetails = string.Empty;
             OutputFilePath = string.Empty;
             CellAddress = string.Empty;
-            StatusMessage = string.Empty;
             _worksheetNames.Clear();
+            ClearStatusMessage();
         }
-
-        #region INotifyPropertyChanged Support
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-        #endregion
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
