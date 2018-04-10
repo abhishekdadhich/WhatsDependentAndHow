@@ -5,6 +5,7 @@
         xmlns:viewModels="clr-namespace:WhatsDependentAndHow.ViewModels"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         WindowState="Maximized" ShowMaxRestoreButton="False" ShowCloseButton="False"
+        Icon="../Images/main_icon.ico" ShowIconOnTitleBar="True"
         Title="What's Dependent And How">
 
     <Window.DataContext>

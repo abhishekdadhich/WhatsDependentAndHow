@@ -13,30 +13,38 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
-            Text="Do you really want to close the application?" 
-                   FontSize="48" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <GroupBox Header="Exit Application?" Grid.Row="0" Grid.Column="0">
 
-        <Button FontSize="36" Grid.Row="1" Grid.Column="0"
-                Margin="10,50,10,10" Content="Yes" Width="180"
-                controls:ButtonHelper.PreserveTextCase="True"
-                Name="btnYes" HorizontalAlignment="Right" VerticalAlignment="Center"
-                Style="{DynamicResource AccentedSquareButtonStyle}" 
-                Command="{Binding ButtonCloseApplicationCommand, Mode=OneWay}"/>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                
+                <TextBlock Margin="10,30,10,10"
+                    Text="Do you really want to close the application?" 
+                        FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
-        <Button FontSize="36" Grid.Row="1" Grid.Column="1"
-                Margin="10,50,10,10" Content="No" Width="180"
-                controls:ButtonHelper.PreserveTextCase="True"
-                Name="btnNo" HorizontalAlignment="Left" VerticalAlignment="Center"
-                Style="{DynamicResource AccentedSquareButtonStyle}" />
+                <StackPanel Orientation="Horizontal">
+                    
+                    <Button FontSize="14"
+                        Margin="10,30,10,10" Content="Yes" Width="180"
+                        controls:ButtonHelper.PreserveTextCase="True"
+                        Name="btnYes" HorizontalAlignment="Right" VerticalAlignment="Center"
+                        Style="{DynamicResource AccentedSquareButtonStyle}" 
+                        Command="{Binding ButtonCloseApplicationCommand, Mode=OneWay}"/>
 
+                    <Button FontSize="14" 
+                        Margin="10,30,10,10" Content="No" Width="180"
+                        controls:ButtonHelper.PreserveTextCase="True"
+                        Name="btnNo" HorizontalAlignment="Left" VerticalAlignment="Center"
+                        Style="{DynamicResource AccentedSquareButtonStyle}" />
+                    
+                </StackPanel>
+                
+            </StackPanel>
+            
+        </GroupBox>
     </Grid>
 </UserControl>
