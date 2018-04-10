@@ -86,28 +86,28 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="BusyUserControl.xaml">
+    <Page Include="Views\BusyUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ExcelDiff.xaml">
+    <Page Include="Views\ExcelDiff.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ExitApplication.xaml">
+    <Page Include="Views\ExitApplication.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AdornerBehaviour.cs" />
+    <Compile Include="Views\AdornerBehaviour.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BusyUserControl.xaml.cs">
+    <Compile Include="Views\BusyUserControl.xaml.cs">
       <DependentUpon>BusyUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commands\ButtonCloseApplicationCommand.cs" />
@@ -116,27 +116,27 @@
     <Compile Include="Commands\ButtonFindDifferencesClickCommand.cs" />
     <Compile Include="Commands\ButtonGenerateTreeCommand.cs" />
     <Compile Include="Commands\ButtonOutputPathSelectorCommand.cs" />
-    <Compile Include="CellObject.cs" />
-    <Compile Include="ControlAdorner.cs" />
-    <Compile Include="ExcelDiff.xaml.cs">
+    <Compile Include="Models\CellObject.cs" />
+    <Compile Include="Views\ControlAdorner.cs" />
+    <Compile Include="Views\ExcelDiff.xaml.cs">
       <DependentUpon>ExcelDiff.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ExitApplication.xaml.cs">
+    <Compile Include="Views\ExitApplication.xaml.cs">
       <DependentUpon>ExitApplication.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Helpers.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="TreeGenerator.xaml">
+    <Page Include="Views\TreeGenerator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SelectedItemToContentConverter.cs" />
-    <Compile Include="TreeGenerator.xaml.cs">
+    <Compile Include="Views\SelectedItemToContentConverter.cs" />
+    <Compile Include="Views\TreeGenerator.xaml.cs">
       <DependentUpon>TreeGenerator.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\ExcelDiffViewModel.cs" />

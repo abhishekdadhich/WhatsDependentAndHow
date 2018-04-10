@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WhatsDependentAndHow"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:vm="clr-namespace:WhatsDependentAndHow.ViewModels"
         mc:Ignorable="d">
 
     <UserControl.Resources>

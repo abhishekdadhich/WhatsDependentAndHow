@@ -16,7 +16,6 @@
             </LinearGradientBrush>
         </Border.Background>
 
-        <TextBlock FontSize="24" Foreground="White" Text="Loading..." HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        
+        <TextBlock FontSize="24" Foreground="White" Text="Processing..." HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Border>
 </UserControl>

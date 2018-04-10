@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using WhatsDependentAndHow.ViewModels;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -33,29 +29,46 @@ namespace WhatsDependentAndHow.Commands
             Excel.Workbook xlLeftWorkBook = _viewModel.ViewModelMainWindow.XlLeftWorkBook;
             Excel.Workbook xlRightWorkBook = _viewModel.ViewModelMainWindow.XlRightWorkBook;
 
-            if (xlWorkBookTreeGenerator != null)
+            try
             {
-                xlWorkBookTreeGenerator.Close();
-                Marshal.ReleaseComObject(xlWorkBookTreeGenerator);
+                if (xlWorkBookTreeGenerator != null)
+                {
+                    xlWorkBookTreeGenerator.Close();
+                    Marshal.ReleaseComObject(xlWorkBookTreeGenerator);
+                }
             }
+            catch (Exception) { }
 
-            if (xlLeftWorkBook != null)
-            {
-                xlLeftWorkBook.Close();
-                Marshal.ReleaseComObject(xlLeftWorkBook);
-            }
 
-            if (xlRightWorkBook != null)
+            try
             {
-                xlRightWorkBook.Close();
-                Marshal.ReleaseComObject(xlRightWorkBook);
+                if (xlLeftWorkBook != null)
+                {
+                    xlLeftWorkBook.Close();
+                    Marshal.ReleaseComObject(xlLeftWorkBook);
+                }
             }
+            catch (Exception) { }
+            
+            try
+            {
+                if (xlRightWorkBook != null)
+                {
+                    xlRightWorkBook.Close();
+                    Marshal.ReleaseComObject(xlRightWorkBook);
+                }
+            }
+            catch (Exception) { }
 
-            if (xlApp != null)
+            try
             {
-                xlApp.Quit();
-                Marshal.ReleaseComObject(xlApp);
+                if (xlApp != null)
+                {
+                    xlApp.Quit();
+                    Marshal.ReleaseComObject(xlApp);
+                }
             }
+            catch (Exception) { }
 
             System.Windows.Application.Current.Shutdown();
         }

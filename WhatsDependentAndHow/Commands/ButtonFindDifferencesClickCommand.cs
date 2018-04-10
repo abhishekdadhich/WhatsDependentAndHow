@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using WhatsDependentAndHow.ViewModels;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -51,7 +49,7 @@ namespace WhatsDependentAndHow.Commands
 
         private void PopulateDiffSummary()
         {
-            _excelDiffViewModel.DiffSummary = string.Format("Left Workbook Sheet Count: {0}\tRight Workbook Sheet Count:{1}\n", _leftWorkBookSheets.Count, _rightWorkBookSheets.Count);
+            _excelDiffViewModel.DiffSummary = string.Format("Left Workbook Sheet Count: {0}\tRight Workbook Sheet Count: {1}\n", _leftWorkBookSheets.Count, _rightWorkBookSheets.Count);
             if (_rightWorkBookSheets.Count != _commonInBothSheets.Count)
             {
                 string sheetsOnlyInLeft = string.Empty;
